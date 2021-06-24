@@ -1,0 +1,46 @@
+.card-get{
+    border-color: #61affe;
+    background: rgba(97,175,254,.1);
+}
+
+.card-post{
+    border-color: #49cc90;
+    background: rgba(73,204,144,.1);
+}
+
+.card-put{
+    border-color: #fca130;
+    background: rgba(252,161,48,.1);
+}
+
+.card-delete{
+    border-color: #f93e3e;
+    background: rgba(249,62,62,.1);
+}
+
+span.span-simpleCrud{
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 15px;
+    text-align: center;
+    border-radius: 3px;
+    text-shadow: 0 1px rgb(0, 0, 0 / 10%);
+    color: white
+}
+
+span.span-get{
+    background: #61affe;
+}
+
+span.span-post{
+    background: #49cc90;
+}
+
+span.span-put{
+    background: #fca130;
+}
+
+span.span-delete{
+    background: #f93e3e;
+}
+
