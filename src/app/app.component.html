@@ -12,28 +12,30 @@
 
 <div class="card">
   <div class="card-body">
-    <form [formGroup]="form" class="form-horizontal form-material m-b-10" id="form">
-      <div class="form-group">
-        <div class="col-xs-12">
-          <label for="">formOption</label>
-          <select class="form-control custom-select" id="formOption" formControlName="formOption" name="formOption"
-            [ngClass]="{'has-error': (hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))}">
-            <option selected value="undefined"> Select</option>
-            <option selected value="GET"> GET</option>
-            <option selected value="ADD"> ADD</option>
-            <!-- <option *ngFor="let type of formOptionsList" [value]=type.docID>
-              {{type.doc_description}}
-            </option> -->
-          </select>
-          <div class="has-error"
-            *ngIf="(hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))">
-            <span *ngIf="form.controls['formOption'].errors.required">required field</span>
+    <div class="row">
+        <div class="col-12">
+        <form [formGroup]="form" class="form-horizontal form-material m-b-10" id="form">
+          <div class="form-group">
+            <div class="col-6">
+              <label for="">Select action</label>
+              <select class="form-control custom-select" id="formOption" formControlName="formOption" name="formOption"
+                [ngClass]="{'has-error': (hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))}">
+                <option selected disabled value="undefined"> SELECT</option>
+                <option *ngFor="let item of optionSelectList" [value]=item.desc>
+                  {{item.desc}}
+                </option>
+              </select>
+              <div class="has-error"
+                *ngIf="(hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))">
+                <span *ngIf="form.controls['formOption'].errors.required">required field</span>
+              </div>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
-    </form>
+    </div>
     <div class="row" *ngIf="this.form.get('formOption').value==='GET'" style="justify-content:center;">
-      <div class="col-md-12 mb-3 " style="justify-content:center;">
+      <div class="col-12 mb-3 " style="justify-content:center;">
         <div class="card card-inverse card-info menu-cards">
           <div class="card-header">
             Get Data
@@ -45,11 +47,12 @@
                 <button type="button" class="btn btn-primary-comfandi" (click)="getData()">getData</button>
               </div>
             </div>
-            <p *ngIf="showData">{{data | json }}</p>
+            <pre *ngIf="showData">{{data | json }}</pre>
           </div>
         </div>
       </div>
     </div>
+
     <div class="row" *ngIf="this.form.get('formOption').value==='ADD'" style="justify-content:center;">
       <div class="col-md-12 mb-3 " style="justify-content:center;">
         <div class="card card-inverse card-info menu-cards">
@@ -57,7 +60,7 @@
             ADD Data
           </div>
           <div class="card-body">
-            <p>Click on button to show ADD data.</p>
+            <p>Click on button to ADD data.</p>
             <form [formGroup]="addForm" class="form-horizontal form-material m-b-10" id="addForm">
               <div class="form-group">
                 <div class="col-12">
@@ -83,12 +86,145 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row" *ngIf="alreadyExistsError">
+                    <div class="col-12 has-error">
+                      <span> <strong>The property <i>{{propertyName}}</i> already exists in the current data. If you want to edit it select the action UPDATE</strong></span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
             <div class="col-md-12 mt-3 mb-3" style="justify-content:center;">
               <button type="button" class="btn btn-primary-comfandi" (click)="addData()">addData</button>
-              <p class="mt-3" *ngIf="showData">{{data | json }}</p>
+              <pre class="mt-3" *ngIf="showData">{{data | json }}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="this.form.get('formOption').value==='UPDATE'" style="justify-content:center;">
+      <div class="col-md-12 mb-3 " style="justify-content:center;">
+        <div class="card card-inverse card-info menu-cards">
+          <div class="card-header">
+            UPDATE Data
+          </div>
+          <div class="card-body">
+            <p>Click on button to UPDATE data.</p>
+            <form [formGroup]="updateForm" class="form-horizontal form-material m-b-10" id="updateForm">
+              <div class="form-group">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-6">
+                      <select class="form-control custom-select" id="selectField" formControlName="selectField" name="selectField"
+                        [ngClass]="{'has-error': (hasError && updateForm.controls['selectField'].errors) || (updateForm.controls['selectField'].errors && (updateForm.controls['selectField'].dirty || updateForm.controls['selectField'].touched))}">
+                        <option selected disabled value="undefined"> Select the option to edit</option>
+                        <option selected value="name"> Edit property name</option>
+                        <option selected value="value"> Edit property value</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="updateForm.get('selectField').value !== undefined">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-6">
+                        <label for="sampleField" class="colorTitle">Current data: </label>
+                        <pre>{{data|json}}</pre>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-4">
+                        <label for="name" class="colorTitle">Name</label>
+                        <input type="text" formControlName="name" class="form-control" id="name" name="name"
+                          placeholder="Enter a property name"
+                          [ngClass]="{'has-error': (hasError && updateForm.controls['name'].errors) || (updateForm.controls['name'].errors && (updateForm.controls['name'].dirty || updateForm.controls['name'].touched))}" />
+                        <div class="has-error"
+                          *ngIf="(hasError && updateForm.controls['name'].errors) || (updateForm.controls['name'].errors && (updateForm.controls['name'].dirty || updateForm.controls['name'].touched))">
+                          <span *ngIf="updateForm.controls['name'].errors.required">required field</span>
+                        </div>
+                      </div>
+                      <div class="col-4" *ngIf="updateForm.get('selectField').value === 'value'">
+                        <label for="value" class="colorTitle">Value</label>
+                        <input type="text" formControlName="value" class="form-control" id="value" name="value"
+                          placeholder="Enter a property value"
+                          [ngClass]="{'has-error': (hasError && updateForm.controls['value'].errors) || (updateForm.controls['value'].errors && (updateForm.controls['value'].dirty || updateForm.controls['value'].touched))}" />
+                        <div class="has-error"
+                          *ngIf="(hasError && updateForm.controls['value'].errors) || (updateForm.controls['value'].errors && (updateForm.controls['value'].dirty || updateForm.controls['value'].touched))">
+                          <span *ngIf="updateForm.controls['value'].errors.required">required field</span>
+                        </div>
+                      </div>
+                      <div class="col-4" *ngIf="updateForm.get('selectField').value === 'name'">
+                        <label for="newName" class="colorTitle">New property name</label>
+                        <input type="text" formControlName="newName" class="form-control" id="newName" name="newName"
+                          placeholder="Enter new property name"
+                          [ngClass]="{'has-error': (hasError && updateForm.controls['newName'].errors) || (updateForm.controls['newName'].errors && (updateForm.controls['newName'].dirty || updateForm.controls['newName'].touched))}" />
+                        <div class="has-error"
+                          *ngIf="(hasError && updateForm.controls['newName'].errors) || (updateForm.controls['newName'].errors && (updateForm.controls['newName'].dirty || updateForm.controls['newName'].touched))">
+                          <span *ngIf="updateForm.controls['newName'].errors.required">required field</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="noPropertyError">
+                      <div class="col-12 has-error">
+                        <span> <strong>The property <i>{{updatePropertyName}}</i> doesn't exist in the current data</strong></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="col-md-12 mt-3 mb-3" style="justify-content:center;">
+              <button type="button" class="btn btn-primary-comfandi" (click)="updateData()">updateData</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="this.form.get('formOption').value==='DELETE'" style="justify-content:center;">
+      <div class="col-md-12 mb-3 " style="justify-content:center;">
+        <div class="card card-inverse card-info menu-cards">
+          <div class="card-header">
+            DELETE Data
+          </div>
+          <div class="card-body">
+            <p>Click on button to DELETE data.</p>
+            <form [formGroup]="deleteForm" class="form-horizontal form-material m-b-10" id="deleteForm">
+              <div class="form-group">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-6">
+                      <label for="sampleField" class="colorTitle">Current data: </label>
+                      <pre>{{data|json}}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-4">
+                      <label for="name" class="colorTitle">Name</label>
+                      <input type="text" formControlName="name" class="form-control" id="name" name="name"
+                        placeholder="Enter a property name"
+                        [ngClass]="{'has-error': (hasError && deleteForm.controls['name'].errors) || (deleteForm.controls['name'].errors && (deleteForm.controls['name'].dirty || deleteForm.controls['name'].touched))}" />
+                      <div class="has-error"
+                        *ngIf="(hasError && deleteForm.controls['name'].errors) || (deleteForm.controls['name'].errors && (deleteForm.controls['name'].dirty || deleteForm.controls['name'].touched))">
+                        <span *ngIf="deleteForm.controls['name'].errors.required">required field</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="noPropertyDeleteError">
+                    <div class="col-12 has-error">
+                      <span> <strong>The property <i>{{propertyName}}</i> doen't exists in the current data. If you want to add it select the action ADD</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="col-md-12 mt-3 mb-3" style="justify-content:center;">
+              <button type="button" class="btn btn-primary-comfandi" (click)="deleteData()">deleteData</button>
             </div>
           </div>
         </div>
