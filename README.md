@@ -8,3 +8,5 @@ This is a pseudo-CRUD (Not a real CRUD because there is no real stored data), ve
 
 To see hot it works go to:
 https://remusqs1.github.io/AngularCrud/
+
+<!-- To deploy: ng deploy --base-href=https://remusqs1.github.io/AngularCrud/ -->

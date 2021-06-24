@@ -18,10 +18,15 @@ export class AppComponent implements OnInit {
   noPropertyError = false;
   noPropertyDeleteError = false;
   alreadyExistsError = false;
+  succesUpdate = false;
+  updateError = false;
   propertyName: string;
   optionSelectList = [{ desc: 'GET' }, { desc: 'ADD' }, { desc: 'UPDATE' }, { desc: 'DELETE' }]
   
   constructor(private formBuilder: FormBuilder) { }
+
+  //TODO Solve core.js:4197 ERROR Error: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked
+  //TODO reset forms on changes, and update sub select drop
 
   ngOnInit() {
     this.form = this.getForm();
@@ -29,8 +34,9 @@ export class AppComponent implements OnInit {
     this.updateForm = this.getUpdateForm();
     this.deleteForm = this.getDeleteForm();
 
-    this.form.get('formOption').valueChanges.subscribe(() => {
+    this.form.get('formOption').valueChanges.subscribe(value => {
       this.showData = false;
+      if(value === "UPDATE") this.updateForm.get('selectField').setValue(undefined);
     });
   }
 
@@ -59,16 +65,41 @@ export class AppComponent implements OnInit {
 
   updateData() {
     this.hasError = false;
+    this.updateError = false;
     this.noPropertyError = false;
+    this.succesUpdate = false;
     if (this.updateForm.valid) {
-      //TODO update value or name, according to the case
       this.propertyName = this.updateForm.get('name').value;
-      let propertyValue = this.updateForm.get('value').value;
       let newPropertyName = this.updateForm.get('newName').value;
-      if (this.propertyName in this.data) {
-        this.data[this.propertyName] = propertyValue;
+      if (newPropertyName in this.data) {
+        this.updateError = true;
+      }
+      else if (this.propertyName in this.data) {
+        if (this.updateForm.get('selectField').value == 'name') {
+          let newJson = {};
+          let keys = Object.keys(this.data);
+          let indexJson = Object.keys(this.data).indexOf(this.propertyName);
+          for (let index = 0; index < keys.length; index++) {
+            if (index !== indexJson) {
+              newJson[keys[index]] = Object.values(this.data)[index];
+            }
+            else {
+              newJson[newPropertyName] = Object.values(this.data)[index];
+            }
+          }
+          this.data = newJson;
+        }
+        else {
+          let propertyValue = this.updateForm.get('value').value;
+          this.data[this.propertyName] = propertyValue;
+        }
+        this.succesUpdate = true;
+        this.updateForm.get('name').reset();
+        this.updateForm.get('value').reset();
+        this.updateForm.get('newName').reset();
       }
       else {
+        this.updateError = true;
         this.noPropertyError = true;
       }
     }
@@ -121,7 +152,16 @@ export class AppComponent implements OnInit {
       
       if(value !== undefined){
         this.hasError = false;
-        //TODO Set conditional validators for value or newName
+        this.succesUpdate = false;
+        if(value === 'value'){
+          this.updateForm.get('value').setValidators([Validators.required, Validators.nullValidator])
+          this.updateForm.get('newName').setValidators([])
+        }
+        else if(value){
+          this.updateForm.get('value').setValidators([])
+          this.updateForm.get('newName').setValidators([Validators.required, Validators.nullValidator])
+        }
+        this.updateForm.updateValueAndValidity();
       }
       
     });

@@ -12,39 +12,44 @@
 
 <div class="card">
   <div class="card-body">
-    <div class="row">
-        <div class="col-12">
-        <form [formGroup]="form" class="form-horizontal form-material m-b-10" id="form">
-          <div class="form-group">
-            <div class="col-6">
-              <label for="">Select action</label>
-              <select class="form-control custom-select" id="formOption" formControlName="formOption" name="formOption"
-                [ngClass]="{'has-error': (hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))}">
-                <option selected disabled value="undefined"> SELECT</option>
-                <option *ngFor="let item of optionSelectList" [value]=item.desc>
-                  {{item.desc}}
-                </option>
-              </select>
-              <div class="has-error"
-                *ngIf="(hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))">
-                <span *ngIf="form.controls['formOption'].errors.required">required field</span>
+
+    <div class="row mb-3">
+      <div class="col-4">
+        <div class="card card-inverse card-info menu-cards">
+          <form [formGroup]="form" class="form-horizontal form-material m-b-10" id="form">
+            <div class="form-group">
+              <div class="col-12">
+                <label for="">Select action</label>
+                <select class="form-control custom-select" id="formOption" formControlName="formOption"
+                  name="formOption"
+                  [ngClass]="{'has-error': (hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))}">
+                  <option selected disabled value="undefined"> SELECT</option>
+                  <option *ngFor="let item of optionSelectList" [value]=item.desc>
+                    {{item.desc}}
+                  </option>
+                </select>
+                <div class="has-error"
+                  *ngIf="(hasError && form.controls['formOption'].errors) || (form.controls['formOption'].errors && (form.controls['formOption'].dirty || form.controls['formOption'].touched))">
+                  <span *ngIf="form.controls['formOption'].errors.required">required field</span>
+                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
-    <div class="row" *ngIf="this.form.get('formOption').value==='GET'" style="justify-content:center;">
-      <div class="col-12 mb-3 " style="justify-content:center;">
-        <div class="card card-inverse card-info menu-cards">
-          <div class="card-header">
-            Get Data
+
+    <div class="row" *ngIf="this.form.get('formOption').value==='GET'">
+      <div class="col-8 mb-3">
+        <div class="card card-inverse card-info menu-cards card-get">
+          <div class="card-header card-get">
+            <span class="span-simpleCrud span-get">GET</span> Get Data
           </div>
           <div class="card-body">
             <p>Click on button to show data.</p>
             <div class="row">
               <div class="col-md-12 mb-4 " style="justify-content:center;">
-                <button type="button" class="btn btn-primary-comfandi" (click)="getData()">getData</button>
+                <button type="button" class="btn btn-outline-info" (click)="getData()">Get Data</button>
               </div>
             </div>
             <pre *ngIf="showData">{{data | json }}</pre>
@@ -53,11 +58,11 @@
       </div>
     </div>
 
-    <div class="row" *ngIf="this.form.get('formOption').value==='ADD'" style="justify-content:center;">
-      <div class="col-md-12 mb-3 " style="justify-content:center;">
-        <div class="card card-inverse card-info menu-cards">
-          <div class="card-header">
-            ADD Data
+    <div class="row" *ngIf="this.form.get('formOption').value==='ADD'">
+      <div class="col-8 mb-3">
+        <div class="card card-inverse card-info menu-cards card-post">
+          <div class="card-header card-post">
+            <span class="span-simpleCrud span-post">POST</span> ADD Data
           </div>
           <div class="card-body">
             <p>Click on button to ADD data.</p>
@@ -88,14 +93,15 @@
                   </div>
                   <div class="row" *ngIf="alreadyExistsError">
                     <div class="col-12 has-error">
-                      <span> <strong>The property <i>{{propertyName}}</i> already exists in the current data. If you want to edit it select the action UPDATE</strong></span>
+                      <span> <strong>The property <i>{{propertyName}}</i> already exists in the current data. If you
+                          want to edit it select the action UPDATE</strong></span>
                     </div>
                   </div>
                 </div>
               </div>
             </form>
             <div class="col-md-12 mt-3 mb-3" style="justify-content:center;">
-              <button type="button" class="btn btn-primary-comfandi" (click)="addData()">addData</button>
+              <button type="button" class="btn btn-outline-success" (click)="addData()">Add data</button>
               <pre class="mt-3" *ngIf="showData">{{data | json }}</pre>
             </div>
           </div>
@@ -103,11 +109,11 @@
       </div>
     </div>
 
-    <div class="row" *ngIf="this.form.get('formOption').value==='UPDATE'" style="justify-content:center;">
-      <div class="col-md-12 mb-3 " style="justify-content:center;">
-        <div class="card card-inverse card-info menu-cards">
-          <div class="card-header">
-            UPDATE Data
+    <div class="row" *ngIf="this.form.get('formOption').value==='UPDATE'">
+      <div class="col-8 mb-3">
+        <div class="card card-inverse card-info menu-cards card-put">
+          <div class="card-header card-put">
+            <span class="span-simpleCrud span-put">PUT</span> UPDATE Data
           </div>
           <div class="card-body">
             <p>Click on button to UPDATE data.</p>
@@ -116,7 +122,8 @@
                 <div class="col-12">
                   <div class="row">
                     <div class="col-6">
-                      <select class="form-control custom-select" id="selectField" formControlName="selectField" name="selectField"
+                      <select class="form-control custom-select" id="selectField" formControlName="selectField"
+                        name="selectField"
                         [ngClass]="{'has-error': (hasError && updateForm.controls['selectField'].errors) || (updateForm.controls['selectField'].errors && (updateForm.controls['selectField'].dirty || updateForm.controls['selectField'].touched))}">
                         <option selected disabled value="undefined"> Select the option to edit</option>
                         <option selected value="name"> Edit property name</option>
@@ -128,7 +135,7 @@
                 <div *ngIf="updateForm.get('selectField').value !== undefined">
                   <div class="col-12">
                     <div class="row">
-                      <div class="col-6">
+                      <div class="col-6 mt-3">
                         <label for="sampleField" class="colorTitle">Current data: </label>
                         <pre>{{data|json}}</pre>
                       </div>
@@ -167,9 +174,17 @@
                         </div>
                       </div>
                     </div>
-                    <div class="row" *ngIf="noPropertyError">
-                      <div class="col-12 has-error">
-                        <span> <strong>The property <i>{{updatePropertyName}}</i> doesn't exist in the current data</strong></span>
+                    <div class="row" *ngIf="updateError">
+                      <div class="col-12 has-error" *ngIf="!noPropertyError">
+                        <span> <strong>A property with name <i>{{propertyName}}</i> already exists in the current data. You need to edit or delete it first.</strong></span>
+                      </div>
+                      <div class="col-12 has-error" *ngIf="noPropertyError">
+                        <span> <strong>The property <i>{{propertyName}}</i> doesn't exist in the current data. If you want to create it select the action ADD</strong></span>
+                      </div>
+                    </div>
+                    <div class="row" *ngIf="succesUpdate">
+                      <div class="col-12 has-success">
+                        <span> The property <i>{{propertyName}}</i> has been successfully updated</span>
                       </div>
                     </div>
                   </div>
@@ -177,18 +192,18 @@
               </div>
             </form>
             <div class="col-md-12 mt-3 mb-3" style="justify-content:center;">
-              <button type="button" class="btn btn-primary-comfandi" (click)="updateData()">updateData</button>
+              <button type="button" class="btn btn-outline-warning" (click)="updateData()">Update Data</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row" *ngIf="this.form.get('formOption').value==='DELETE'" style="justify-content:center;">
-      <div class="col-md-12 mb-3 " style="justify-content:center;">
-        <div class="card card-inverse card-info menu-cards">
-          <div class="card-header">
-            DELETE Data
+    <div class="row" *ngIf="this.form.get('formOption').value==='DELETE'">
+      <div class="col-8 mb-3">
+        <div class="card card-inverse card-info menu-cards card-delete">
+          <div class="card-header card-delete">
+            <span class="span-simpleCrud span-delete">DELETE</span> DELETE Data
           </div>
           <div class="card-body">
             <p>Click on button to DELETE data.</p>
@@ -217,18 +232,20 @@
                   </div>
                   <div class="row" *ngIf="noPropertyDeleteError">
                     <div class="col-12 has-error">
-                      <span> <strong>The property <i>{{propertyName}}</i> doen't exists in the current data. If you want to add it select the action ADD</strong></span>
+                      <span> <strong>The property <i>{{propertyName}}</i> doen't exists in the current data. If you want
+                          to add it select the action ADD</strong></span>
                     </div>
                   </div>
                 </div>
               </div>
             </form>
             <div class="col-md-12 mt-3 mb-3" style="justify-content:center;">
-              <button type="button" class="btn btn-primary-comfandi" (click)="deleteData()">deleteData</button>
+              <button type="button" class="btn btn-outline-danger" (click)="deleteData()">Delete Data</button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>
